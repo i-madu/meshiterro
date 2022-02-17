@@ -8,5 +8,33 @@
   <% if @post_image.user == current_user %>
     <%= link_to "削除",post_image_path(@post_image),method: :delete %>
   <% end%>
-  
 </div>
+
+<div>
+<p>コメント件数：<%= @post_image.post_comments.count %></p>
+<!--PostImageモデルから投稿画像に紐づいたコメント情報を取得してコメント数を表示-->
+<% @post_image.post_comments.each do |post_comment| %>
+<!--投稿画像から紐づいたコメント情報を取得。表示していく-->
+  <p><%= image_tag post_comment.user.get_profile_image(100,100) %></p>
+  <!--コメントしたユーザーのプロフィール画像を表示-->
+  <%= post_comment.user.name %>
+  <!--コメントしたユーザーネーム表示-->
+  <%= post_comment.created_at.strftime("%Y/%m/%d") %><%= post_comment.comment %>
+  <!--コメントされた年月日表示。コメント表示-->
+  <% if post_comment.user == current_user %><!--もしコメントしたもののIDと今ログインしている者のIDが同じならば-->
+    <%= link_to "削除",post_image_post_comment_path(post_comment.post_image,post_comment),method: :delete %>
+  <% end %>
+  
+  <% end %>
+</div>
+
+  <div>
+    <%= form_with model:[@post_image,@post_comment] do |f| %>
+    <!--post_imageに結びついたpost_commentモデルと連携した
+    セキュリティ対策などが組み込まれた安全なHTMLのformタグを作成-->
+      <%= f.text_area:comment,rows:"5",placeholder:"コメントをここに" %>
+      <!--commentのためのテキストフォーム。入力欄の高さ５行。
+      フォームに薄い灰色で”コメントここに”-->
+      <%= f.submit"送信する" %>
+    <% end %>
+  </div>
