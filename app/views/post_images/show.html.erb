@@ -10,6 +10,22 @@
   <% end%>
 </div>
 
+<% if @post_image.favorited_by?(current_user) %>
+  <p>
+    <%= link_to post_image_favorites_path(@post_image),method: :delete do %>
+      ❤<%= @post_image.favorites.count %>いいね
+    <% end %>
+  </p>
+  <% else %>
+    <p>
+      <%= link_to post_image_favorites_path(@post_image),method: :post do %>
+        ♡<%= @post_image.favorites.count %>いいね
+      <% end %>
+    </p>
+<% end %>
+
+
+
 <div>
 <p>コメント件数：<%= @post_image.post_comments.count %></p>
 <!--PostImageモデルから投稿画像に紐づいたコメント情報を取得してコメント数を表示-->
@@ -24,6 +40,7 @@
   <% if post_comment.user == current_user %><!--もしコメントしたもののIDと今ログインしている者のIDが同じならば-->
     <%= link_to "削除",post_image_post_comment_path(post_comment.post_image,post_comment),method: :delete %>
   <% end %>
+  
   
   <% end %>
 </div>
